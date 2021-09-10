@@ -14,3 +14,6 @@ type Tiss struct {
 
 var Price []Tiss
 var Order []Tiss
+var Nakl []Tiss
+
+const Kurs = 75

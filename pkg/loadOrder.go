@@ -17,15 +17,15 @@ func LoadOrder() {
 
 	sh, ok := wb.Sheet["Orders"]
 	if !ok {
-		fmt.Println("Sheet does not exist")
+		fmt.Println("Sheet Orders does not exist")
 		return
 	}
-	fmt.Printf("MaxRow=%v\n", sh.MaxRow)
+	fmt.Printf("MaxRow in Order=%v\n", sh.MaxRow)
 
 	for i := 1; i < sh.MaxRow; i++ {
 		//for i, val := range sh {
 		//fmt.Printf("%v\n", i)
-		theCell, err := sh.Cell(i, 2)
+		theCell, err := sh.Cell(i, 2) //firm
 		if err != nil {
 			panic(err)
 		}
@@ -85,6 +85,8 @@ func LoadOrder() {
 		if err != nil {
 			panic(err)
 		}
+		priceFloat = priceFloat * models.Kurs
+		price = fmt.Sprintf("%5.2f", priceFloat)
 		amount := fmt.Sprintf("%5.2f", qtyFloat*priceFloat)
 		//sales165Str := strconv.Itoa(sales165 * 1.65)		//sales205Str := strconv.Itoa(sales205 * 2.05)
 		tmp := models.Tiss{Firm: firm, PartNumber: partnumber, Name: name, Price: price, Qty: qty, Amount: amount, Remark: remark}
@@ -92,5 +94,19 @@ func LoadOrder() {
 		models.Order = append(models.Order, tmp)
 
 	}
-	fmt.Printf("Order = %v\n", models.Order)
+	for i, val := range models.Order {
+		for j := i; j < len(models.Order); j++ {
+			if i != j && val.Price == models.Order[j].Price && val.PartNumber == models.Order[j].PartNumber && val.Remark == models.Order[j].Remark {
+
+				qtyi, _ := strconv.Atoi(val.Qty)
+				qtyj, _ := strconv.Atoi(models.Order[j].Qty)
+				models.Order[j].Qty = strconv.Itoa(qtyi + qtyj)
+				models.Order[i].Price = "---"
+				models.Order[i].Qty = "---"
+
+			}
+		}
+	}
+
+	//fmt.Printf("Order = %v\n", models.Order)
 }

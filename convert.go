@@ -6,6 +6,8 @@ import (
 
 func main() {
 	pkg.LoadOrder()
+	pkg.LoadNakl()
 	pkg.Parse()
+	pkg.CreateXLSX()
 
 }
